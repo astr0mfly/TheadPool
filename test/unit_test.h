@@ -1,10 +1,3 @@
-/**
- *    > Author:        UncP
- *    > Github:  www.github.com/UncP/Mushroom
- *    > License:      BSD-3
- *    > Time:  2017-05-19 10:05:56
-**/
-
 #ifndef _UNIT_TEST_HPP_
 #define _UNIT_TEST_HPP_
 
