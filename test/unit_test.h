@@ -24,6 +24,12 @@ void TEST_NAME(test_name)::Run()
 
 #define RUN_ALL_TESTS(str) UnitTest::GetInstance()->Run(str);
 
+#define FORMAT_RED(_S)    "\033[0;31m"#_S"\033[0m"
+#define FORMAT_GREEN(_S)    "\033[0;32m"#_S"\033[0m"
+#define FORMAT_YELLOW(_S)    "\033[0;33m"#_S"\033[0m"
+#define FORMAT_BULE(_S)    "\033[0;34m"#_S"\033[0m"
+#define FORMAT_PURPLE(_S)    "\033[0;35m"#_S"\033[0m"
+
 typedef enum OperatorType
 {
     OPERATOR_TYPE_EQ,
