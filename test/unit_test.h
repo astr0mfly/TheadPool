@@ -40,16 +40,19 @@ typedef enum OperatorType
 class TestCase
 {
 public:
-	TestCase(const char *case_name) :
-        case_name_(case_name),
-        test_result_(false)
+	TestCase(const char *CaseName_F) :
+        m_CaseName_(CaseName_F),
+        m_TestResult_(false)
     { };
 	virtual ~TestCase() { }
-
     virtual void Run() = 0;
+    const char* getCaseName() const { return m_CaseName_; }
+    bool getTestResult() { return m_TestResult_; }
+    void setTestResult(bool &&result_F) { m_TestResult_= result_F; }
 
-	const char *case_name_;
-	bool        test_result_;
+private:
+    const char* m_CaseName_;
+    bool        m_TestResult_;
 };
 
 class UnitTest
@@ -57,69 +60,77 @@ class UnitTest
 public:
 	static UnitTest* GetInstance()
     {
-		static UnitTest unit_test;
-		return &unit_test;
+		static UnitTest s_instUnitTest;
+		return &s_instUnitTest;
 	}
 
     ~UnitTest()
     {
-        for (auto i = test_cases_.begin(); i != test_cases_.end(); ++i)
+        for (auto i = m_vecTestCases_.begin(); i != m_vecTestCases_.end(); ++i)
             delete* i;
     }
 
-	TestCase* RegisterTestCase(TestCase *testcase)
+	TestCase* RegisterTestCase(TestCase *testCase_F)
     {
-		test_cases_.push_back(testcase);
-		return testcase;
+		m_vecTestCases_.push_back(testCase_F);
+		return testCase_F;
 	}
 
 	bool Run(const char *str)
     {
-		test_result_ = true;
+		m_bTestResult_ = true;
 
 		printf("\033[33m[ Start ]  Unit Tests\033[0m\n\n");
 
-		all_ = 0;
-		for (auto it = test_cases_.begin(); it != test_cases_.end(); ++it) {
+		m_iAll_ = 0;
+		for (auto it = m_vecTestCases_.begin(); it != m_vecTestCases_.end(); ++it) {
 			TestCase *test_case = *it;
-            if (str && !strstr(test_case->case_name_, str)) {
+            if (str && !strstr(test_case->getCaseName(), str)) {
                 continue;
             }
 
-			++all_;
-			current_test_case_ = test_case;
-			current_test_case_->test_result_ = true;
+			++m_iAll_;
+			m_pinstCurrentTestCase_ = test_case;
+			m_pinstCurrentTestCase_->setTestResult(true);
 
-			printf("\033[34m[ Run  ] \033[0m%s\n", test_case->case_name_);
+			printf("\033[34m[ Run  ] \033[0m%s\n", test_case->getCaseName());
 
 			test_case->Run();
 
-			if (test_case->test_result_)
-				printf("\033[32m[ Pass ] \033[0m%s\n", test_case->case_name_);
+			if (test_case->getTestResult())
+				printf("\033[32m[ Pass ] \033[0m%s\n", test_case->getCaseName());
 			else
-				printf("\033[31m[ Fail ] \033[0m%s\n", test_case->case_name_);
+				printf("\033[31m[ Fail ] \033[0m%s\n", test_case->getCaseName());
 
-			if (test_case->test_result_) {
-				++passed_num_;
+			if (test_case->getTestResult()) {
+				++m_iPassedNum_;
 			} else {
-				++failed_num_;
-				test_result_ = false;
+				++m_iFailedNum_;
+				m_bTestResult_ = false;
 			}
 		}
 
-		printf("\n\033[33m[ ALL  ] \033[33;1m%d\033[0m\n", all_);
-		printf("\033[32m[ PASS ] \033[32;1m%d\033[0m\n", passed_num_);
-		printf("\033[31m[ FAIL ] \033[31;1m%d\033[0m\n", failed_num_);
-		return !test_result_;
+		printf("\n\033[33m[ ALL  ] \033[33;1m%d\033[0m\n", m_iAll_);
+		printf("\033[32m[ PASS ] \033[32;1m%d\033[0m\n", m_iPassedNum_);
+		printf("\033[31m[ FAIL ] \033[31;1m%d\033[0m\n", m_iFailedNum_);
+		return !m_bTestResult_;
 	}
+    TestCase& getCrtTestCase(){ return (*m_pinstCurrentTestCase_); }
 
-
-	TestCase              *current_test_case_;
-	bool                   test_result_;
-	int                    all_;
-	int                    passed_num_;
-	int                    failed_num_;
-	std::vector<TestCase*> test_cases_;
+private:
+    UnitTest():
+        m_pinstCurrentTestCase_(nullptr),
+        m_bTestResult_(false),
+        m_iAll_(0),
+        m_iPassedNum_(0),
+        m_iFailedNum_(0)
+    {}
+    TestCase               *m_pinstCurrentTestCase_;
+    bool                    m_bTestResult_;
+    int                     m_iAll_;
+    int                     m_iPassedNum_;
+    int                     m_iFailedNum_;
+    std::vector<TestCase*>  m_vecTestCases_;
 };
 
 template <class ElemType>
@@ -178,7 +189,7 @@ bool CheckNumericalData(ElemType left_value, ElemType right_value,
 	}
 
 	if (condition) {
-		UnitTest::GetInstance()->current_test_case_->test_result_ = false;
+        UnitTest::GetInstance()->getCrtTestCase().setTestResult(false);
 		printf("\033[36;1m%s\033[0m: \033[31;1m%lu\033[0m: ", file_name, line_num);
 		printf("\033[33;1mExpect: \033[0m%s%s%s\n", str_left_value, str_operator, str_right_value);
 	}
@@ -203,7 +214,7 @@ bool CheckStrData(const char *left_value, const char *right_value,
 	}
 
 	if (condition) {
-		UnitTest::GetInstance()->current_test_case_->test_result_ = false;
+		UnitTest::GetInstance()->getCrtTestCase().setTestResult(false);
 		printf("\033[36;1m%s\033[0m: \033[31;1m%lu\033[0m: ", file_name, line_num);
 		printf("\033[33;1mExpect: \033[0m%s%s%s\n", str_left_value, str_operator, str_right_value);
 	}
