@@ -12,17 +12,30 @@
 #define TEST(test_name) \
 class TEST_NAME(test_name) : public TestCase \
 { \
-	public: \
-		TEST_NAME(test_name)(const char *name):TestCase(name) { } \
-		virtual void Run(); \
-	private: \
-		static TestCase* const test_case_; \
+public: \
+	TEST_NAME(test_name)(const char *name):TestCase(name) { } \
+	virtual void Run(); \
+private: \
+	static TestCase* const test_case_; \
 }; \
 TestCase* const TEST_NAME(test_name)::test_case_ = UnitTest::GetInstance()->RegisterTestCase( \
 new TEST_NAME(test_name)(#test_name)); \
 void TEST_NAME(test_name)::Run()
 
 #define RUN_ALL_TESTS(str) UnitTest::GetInstance()->Run(str);
+
+typedef enum OperatorType
+{
+    OPERATOR_TYPE_EQ,
+    OPERATOR_TYPE_NE,
+    OPERATOR_TYPE_GT,
+    OPERATOR_TYPE_LT,
+    OPERATOR_TYPE_GE,
+    OPERATOR_TYPE_LE,
+
+    OPERATOR_TYPE_BT
+} OperatorType_E;
+
 
 class TestCase
 {
@@ -42,22 +55,26 @@ public:
 class UnitTest
 {
 public:
-	static UnitTest* GetInstance() {
+	static UnitTest* GetInstance()
+    {
 		static UnitTest unit_test;
 		return &unit_test;
 	}
 
-    ~UnitTest() {
+    ~UnitTest()
+    {
         for (auto i = test_cases_.begin(); i != test_cases_.end(); ++i)
             delete* i;
     }
 
-	TestCase* RegisterTestCase(TestCase *testcase) {
+	TestCase* RegisterTestCase(TestCase *testcase)
+    {
 		test_cases_.push_back(testcase);
 		return testcase;
 	}
 
-	bool Run(const char *str) {
+	bool Run(const char *str)
+    {
 		test_result_ = true;
 
 		printf("\033[33m[ Start ]  Unit Tests\033[0m\n\n");
@@ -65,8 +82,10 @@ public:
 		all_ = 0;
 		for (auto it = test_cases_.begin(); it != test_cases_.end(); ++it) {
 			TestCase *test_case = *it;
-			if (str && !strstr(test_case->case_name_, str))
-				continue;
+            if (str && !strstr(test_case->case_name_, str)) {
+                continue;
+            }
+
 			++all_;
 			current_test_case_ = test_case;
 			current_test_case_->test_result_ = true;
@@ -103,22 +122,11 @@ public:
 	std::vector<TestCase*> test_cases_;
 };
 
-typedef enum OperatorType
-{
-	OPERATOR_TYPE_EQ,
-	OPERATOR_TYPE_NE,
-	OPERATOR_TYPE_GT,
-	OPERATOR_TYPE_LT,
-	OPERATOR_TYPE_GE,
-	OPERATOR_TYPE_LE,
-
-    OPERATOR_TYPE_BT
-} OperatorType_E;
-
 template <class ElemType>
 bool CheckNumericalData(ElemType left_value, ElemType right_value,
-	const char *str_left_value, const char *str_right_value,
-	const char *file_name, const unsigned long line_num, OperatorType operator_type)
+	                    const char *str_left_value, const char *str_right_value,
+	                    const char *file_name, const unsigned long line_num,
+                        OperatorType operator_type)
 {
 	bool condition = false;
 	char str_operator[5] = {0};
@@ -178,8 +186,9 @@ bool CheckNumericalData(ElemType left_value, ElemType right_value,
 }
 
 bool CheckStrData(const char *left_value, const char *right_value,
-	const char *str_left_value, const char *str_right_value,
-	const char *file_name, const unsigned long line_num, OperatorType operator_type)
+	              const char *str_left_value, const char *str_right_value,
+	              const char *file_name, const unsigned long line_num,
+                  OperatorType operator_type)
 {
 	bool condition = false;
 	char str_operator[5] = {0};

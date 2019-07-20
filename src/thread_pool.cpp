@@ -216,11 +216,11 @@ VOID ThreadPool::addTask(CallBack_T pfnProcess, VOID *pvArgInput)
 {
 	m_iTaskNum++;
 
-	PTask pTmp = new tagTask(pfnProcess, pvArgInput);
+	PTask pTmp = new Task(pfnProcess, pvArgInput);
 	//Use mutex lock to ensure only one thread can be notified
 	m_mtxTask.lock();
 	m_qTasks.emplace(pTmp);
-	m_condTaskReady.notify_one();
+    m_condTaskReady.notify_one();
 	m_mtxTask.unlock();
 }
 

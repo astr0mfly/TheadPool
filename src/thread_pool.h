@@ -3,7 +3,7 @@
 
 #include <functional>
 #include <atomic>
-#define MAX_THREADS (200)	//The max number of threads that can be created.
+#define MAX_THREADS (20)	//The max number of threads that can be created.
 
 /*Linux has <pthread.h> to support multithread while WIN32 has <thread>*/
 #ifdef __linux__
@@ -164,11 +164,11 @@ private:
 	DWORD m_dwThreadId;	//m_dwThreadId--thread have an id
 	Proc m_unProc;
 #endif
-	mutex m_mtxTask;	//sg_mtxTask--mutex used in WIN32
-	condition_variable m_condTaskReady; //sg_condTaskReady--condition variable in WIN32
-	std::atomic<int> m_iTaskNum;//sg_iTaskNum--the number of qTasks that haven't been dealt with
-	std::atomic<bool> m_bStoped;
-	std::queue<PTask> m_qTasks;//qTasks--the queue that qTasks are waiting for worker thread
+	mutex               m_mtxTask;	//sg_mtxTask--mutex used in WIN32
+	condition_variable  m_condTaskReady; //sg_condTaskReady--condition variable in WIN32
+	std::atomic<int>    m_iTaskNum;//sg_iTaskNum--the number of qTasks that haven't been dealt with
+	std::atomic<bool>   m_bStoped;
+	std::queue<PTask>   m_qTasks;//qTasks--the queue that qTasks are waiting for worker thread
 };
 
 #endif //THREAD_POOL_H_
