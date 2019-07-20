@@ -196,7 +196,7 @@ DWORD ThreadPool::__runWorker(MEMBER_PROC_FUNC pfnMemberProc)
 	for (UINT uIndex = 0; uIndex < m_pThreadHandleTbl->size(); ++uIndex) {
 
 		m_pThreadHandleTbl->at(uIndex) = CreateThread(nullptr, 0, LPTHREAD_START_ROUTINE(m_unProc.pfnThreadProc),
-			(LPVOID)this, 0, &m_dwThreadId);
+			                                         (LPVOID)this, 0, &m_dwThreadId);
 
 		DP("creat thread id: %d \n", m_dwThreadId);
 	}

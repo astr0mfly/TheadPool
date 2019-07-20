@@ -3,7 +3,9 @@
 
 #include <functional>
 #include <atomic>
-#define MAX_THREADS (20)	//The max number of threads that can be created.
+#include <queue>
+#include <mutex>
+#include <condition_variable>
 
 /*Linux has <pthread.h> to support multithread while WIN32 has <thread>*/
 #ifdef __linux__
@@ -14,19 +16,20 @@ static pthread_cond_t task_ready;	//task_ready--condition variable in linux
 #pragma comment(lib,"x86/pthreadVC2.lib")
 using namespace std;
 #elif _WIN32
-#include <thread>
-#ifndef WIN32_LEAN_AND_MEAN
-	#define WIN32_LEAN_AND_MEAN
-#endif
-#include <Windows.h>
-#include <vector>
-#include <queue>
-#include <mutex>
-#include <condition_variable>
 
-#endif
+#ifndef WIN32_LEAN_AND_MEAN
+
+#define WIN32_LEAN_AND_MEAN
+
+#endif  //WIN32_LEAN_AND_MEAN
+
+#include <Windows.h>
+#include <thread>
+#endif  //OS_DEFINE
 
 #include "..\include\singleton.h"
+
+#define MAX_THREADS (20)	//The max number of threads that can be created.
 
 #ifdef _MYDEBUG
 #define DP (printf("%s:%u %s:%s:\t", __FILE__, __LINE__, __DATE__, __TIME__), printf) 
@@ -119,7 +122,7 @@ public:
 	typedef struct tagWorkerParam
 	{
 		ThreadPool *pinstThreadPool;
-		DWORD dwThreadId;
+		DWORD       dwThreadId;
 		tagWorkerParam(ThreadPool *pThis=nullptr, DWORD dwThreadNo=0)
 		{
 			pinstThreadPool = pThis;
@@ -149,9 +152,6 @@ public:
 
 	friend class Singleton<ThreadPool>;	// friend class for adapt Abstract Singletion
 private:
-	UINT m_uThreadCount;	//m_thread_count in need
-
-/*Ensuring portability of programs by macro definition*/
 #ifdef __linux__
 	static void* tp_thread_worker();					//tp_thread_worker--thread worker function in linux
 
@@ -160,10 +160,12 @@ private:
 	DWORD WINAPI __threadWorker(LPVOID pvParam);//__threadWorker--thread worker function in windows
 	DWORD WINAPI __runWorker(MEMBER_PROC_FUNC pfnMemberProc);
 
-	vector<HANDLE> *m_pThreadHandleTbl;
-	DWORD m_dwThreadId;	//m_dwThreadId--thread have an id
-	Proc m_unProc;
+	vector<HANDLE>     *m_pThreadHandleTbl;
+	DWORD               m_dwThreadId;	//m_dwThreadId--thread have an id
+	Proc                m_unProc;
 #endif
+
+    UINT                m_uThreadCount;	//m_thread_count in need
 	mutex               m_mtxTask;	//sg_mtxTask--mutex used in WIN32
 	condition_variable  m_condTaskReady; //sg_condTaskReady--condition variable in WIN32
 	std::atomic<int>    m_iTaskNum;//sg_iTaskNum--the number of qTasks that haven't been dealt with
