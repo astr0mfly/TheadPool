@@ -18,6 +18,9 @@
     <ClCompile Include="..\src\thread_pool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\test\thread_pool_test.cpp">
+      <Filter>资源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\thread_pool.h">
@@ -25,6 +28,9 @@
     </ClInclude>
     <ClInclude Include="..\include\singleton.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\unit_test.h">
+      <Filter>资源文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
