@@ -13,24 +13,41 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{855f0a28-0a18-45b7-a92b-0fa117040eb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\thread_pool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\test\thread_pool_test.cpp">
+    <ClCompile Include="..\include\utility.cpp">
       <Filter>资源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\thread_pool_test.cpp">
+      <Filter>test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\thread_pool.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\singleton.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\test\unit_test.h">
       <Filter>资源文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\debug.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\utility.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\singleton.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\thread_pool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="thread_pool_test.mk">
+      <Filter>test</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -124,13 +124,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\include\utility.cpp" />
     <ClCompile Include="..\src\thread_pool.cpp" />
     <ClCompile Include="..\test\thread_pool_test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\debug.h" />
     <ClInclude Include="..\include\singleton.h" />
+    <ClInclude Include="..\include\utility.h" />
     <ClInclude Include="..\src\thread_pool.h" />
     <ClInclude Include="..\test\unit_test.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="thread_pool_test.mk" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
